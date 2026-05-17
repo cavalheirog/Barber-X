@@ -1,14 +1,8 @@
 # Barber-X
 
-Sistema CRUD de gerenciamento para barbearia desenvolvido em Python e MySQL.
+Sistema de agendamento para barbearias desenvolvido em Python e MySQL.
 
-## Funcionalidades
-
-- Cadastro de clientes
-- Cadastro de barbeiros
-- Cadastro de serviços
-- Agendamento de horários
-- Registro de vendas
+O projeto tem como objetivo realizar o gerenciamento de clientes, barbeiros, serviços, agendamentos e vendas através de operações CRUD integradas com banco de dados relacional.
 
 ## Tecnologias Utilizadas
 
