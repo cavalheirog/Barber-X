@@ -30,9 +30,9 @@ def listar_barbeiros():
 
     sql = """
     SELECT
-        id_barbeiro,
-        nome_barbeiro,
-        especialidade_barbeiro
+    id_barbeiro,
+    nome_barbeiro,
+    especialidade_barbeiro
     FROM tbl_barbeiros
     """
 
@@ -58,10 +58,10 @@ def listar_servicos():
 
     sql = """
     SELECT
-        id_servico,
-        nome_servico,
-        preco_servico,
-        duracao_minutos
+    id_servico,
+    nome_servico,
+    preco_servico,
+    duracao_minutos
     FROM tbl_servicos
     """
 
@@ -94,11 +94,11 @@ def ver_meus_agendamentos(id_usuario):
 
     sql = """
     SELECT
-        tbl_agendamentos.id_agendamento,
-        tbl_barbeiros.nome_barbeiro,
-        tbl_servicos.nome_servico,
-        tbl_agendamentos.data_hora,
-        tbl_agendamentos.status_agendamento
+    tbl_agendamentos.id_agendamento,
+    tbl_barbeiros.nome_barbeiro,
+    tbl_servicos.nome_servico,
+    tbl_agendamentos.data_hora,
+    tbl_agendamentos.status_agendamento
     FROM tbl_agendamentos
 
     INNER JOIN tbl_barbeiros
@@ -203,8 +203,8 @@ def criar_agendamento(id_usuario):
 
             sql_conflito = """
             SELECT
-                tbl_agendamentos.data_hora,
-                tbl_servicos.duracao_minutos
+            tbl_agendamentos.data_hora,
+            tbl_servicos.duracao_minutos
             FROM tbl_agendamentos
             INNER JOIN tbl_servicos
             ON tbl_agendamentos.id_servico = tbl_servicos.id_servico

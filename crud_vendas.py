@@ -2,33 +2,49 @@ from banco_de_dados.conexao import conectar, fechar_conexao
 
 
 def listar_vendas():
+
     conexao = conectar()
     cursor = conexao.cursor()
 
     sql = """
     SELECT
-        tbl_vendas.id_venda,
-        tbl_clientes.nome_cliente,
-        tbl_barbeiros.nome_barbeiro,
-        tbl_servicos.nome_servico,
-        tbl_vendas.valor_venda,
-        tbl_vendas.forma_pagamento
+    tbl_vendas.id_venda,
+    tbl_clientes.nome_cliente,
+    tbl_barbeiros.nome_barbeiro,
+    tbl_servicos.nome_servico,
+    tbl_vendas.valor_venda,
+    tbl_vendas.forma_pagamento
     FROM tbl_vendas
+
     INNER JOIN tbl_agendamentos
     ON tbl_vendas.id_agendamento = tbl_agendamentos.id_agendamento
+
     INNER JOIN tbl_clientes
     ON tbl_agendamentos.id_cliente = tbl_clientes.id_cliente
+
     INNER JOIN tbl_barbeiros
     ON tbl_agendamentos.id_barbeiro = tbl_barbeiros.id_barbeiro
+
     INNER JOIN tbl_servicos
     ON tbl_agendamentos.id_servico = tbl_servicos.id_servico
     """
 
     cursor.execute(sql)
+
     vendas = cursor.fetchall()
 
     for venda in vendas:
-        print(venda)
+
+        print(
+            f"""
+    ID Venda: {venda[0]}
+    Cliente: {venda[1]}
+    Barbeiro: {venda[2]}
+    Serviço: {venda[3]}
+    Valor: R${venda[4]}
+    Forma de pagamento: {venda[5]}
+    """
+        )
 
     cursor.close()
     fechar_conexao(conexao)
@@ -76,6 +92,14 @@ def cadastrar_venda():
             )
         )
 
+        sql_update = """
+        UPDATE tbl_agendamentos
+        SET status_agendamento = 'concluido'
+        WHERE id_agendamento = %s
+        """
+
+        cursor.execute(sql_update, (id_agendamento,))
+
         conexao.commit()
 
         print("Venda cadastrada!")
@@ -84,7 +108,7 @@ def cadastrar_venda():
         fechar_conexao(conexao)
 
     except Exception:
-        print("Erro ao cadastrar venda.")
+        print("Erro ao cadastrar venda. Verifique se o agendamento existe.")
 
 def editar_venda():
     conexao = conectar()

@@ -31,55 +31,70 @@ def login():
 
 
 def cadastrar_usuario_cliente():
-    conexao = conectar()
-    cursor = conexao.cursor()
+    try:
+        conexao = conectar()
+        cursor = conexao.cursor()
 
-    print("\n===== CADASTRO DE CLIENTE =====")
-    login_usuario = input("Crie um login: ")
-    senha_usuario = input("Crie uma senha: ")
-    nome_cliente = input("Nome completo: ")
-    numero_cliente = input("Telefone: ")
-    email_cliente = input("Email: ")
+        print("\n===== CADASTRO DE CLIENTE =====")
 
-    sql_verificar = """
-    SELECT id_usuario
-    FROM tbl_usuarios
-    WHERE login_usuario = %s
-"""
+        login_usuario = input("Crie um login: ")
+        senha_usuario = input("Crie uma senha: ")
+        nome_cliente = input("Nome completo: ")
+        numero_cliente = input("Telefone: ")
+        email_cliente = input("Email: ")
 
-    cursor.execute(sql_verificar, (login_usuario,))
-    usuario_existente = cursor.fetchone()
+        sql_verificar = """
+        SELECT id_usuario
+        FROM tbl_usuarios
+        WHERE login_usuario = %s
+        """
 
-    if usuario_existente:
-        print("Já existe um usuário com esse login.")
-    cursor.close()
-    fechar_conexao(conexao)
-    return
+        cursor.execute(sql_verificar, (login_usuario,))
+        usuario_existente = cursor.fetchone()
 
-    sql_usuario = """
-    INSERT INTO tbl_usuarios
-    (login_usuario, senha_usuario, tipo_usuario)
-    VALUES (%s, %s, 'cliente')
-    """
+        if usuario_existente:
+            print("Já existe um usuário com esse login.")
+            cursor.close()
+            fechar_conexao(conexao)
+            return
 
-    cursor.execute(sql_usuario, (login_usuario, senha_usuario))
-    conexao.commit()
+        sql_usuario = """
+        INSERT INTO tbl_usuarios
+        (login_usuario, senha_usuario, tipo_usuario)
+        VALUES (%s, %s, 'cliente')
+        """
 
-    id_usuario = cursor.lastrowid
+        cursor.execute(sql_usuario, (login_usuario, senha_usuario))
+        conexao.commit()
 
-    sql_cliente = """
-    INSERT INTO tbl_clientes
-    (id_usuario, nome_cliente, numero_cliente, email_cliente)
-    VALUES (%s, %s, %s, %s)
-    """
+        id_usuario = cursor.lastrowid
 
-    cursor.execute(sql_cliente, (id_usuario, nome_cliente, numero_cliente, email_cliente))
-    conexao.commit()
+        sql_cliente = """
+        INSERT INTO tbl_clientes
+        (id_usuario, nome_cliente, numero_cliente, email_cliente)
+        VALUES (%s, %s, %s, %s)
+        """
 
-    print("Cliente cadastrado com sucesso!")
+        cursor.execute(
+            sql_cliente,
+            (
+                id_usuario,
+                nome_cliente,
+                numero_cliente,
+                email_cliente
+            )
+        )
 
-    cursor.close()
-    fechar_conexao(conexao)
+        conexao.commit()
+
+        print("Cliente cadastrado com sucesso!")
+
+        cursor.close()
+        fechar_conexao(conexao)
+
+    except Exception as erro:
+        print("Erro ao cadastrar cliente.")
+        print(erro)
 
 
 def menu_admin():

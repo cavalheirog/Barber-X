@@ -3,7 +3,7 @@ USE barberx;
 
 CREATE TABLE IF NOT EXISTS tbl_usuarios (
     id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    login_usuario VARCHAR(100) NOT NULL,
+    login_usuario VARCHAR(100) NOT NULL UNIQUE
     senha_usuario VARCHAR(30) NOT NULL,
     tipo_usuario ENUM('admin', 'cliente') DEFAULT 'cliente'
 );

@@ -1,17 +1,28 @@
 from banco_de_dados.conexao import conectar, fechar_conexao
 
 def listar_servicos():
+
     conexao = conectar()
     cursor = conexao.cursor()
 
     cursor.execute("SELECT * FROM tbl_servicos")
-    for servico in cursor.fetchall():
-        print(servico)
+
+    servicos = cursor.fetchall()
+
+    for servico in servicos:
+
+        print(
+            f"""
+    ID Serviço: {servico[0]}
+    Nome: {servico[1]}
+    Descrição: {servico[2]}
+    Preço: R${servico[3]}
+    Duração: {servico[4]} minutos
+    """
+        )
 
     cursor.close()
     fechar_conexao(conexao)
-
-
 def cadastrar_servico():
 
     try:

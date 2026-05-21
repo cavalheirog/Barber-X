@@ -7,12 +7,12 @@ def listar_agendamentos():
 
     sql = """
     SELECT
-        tbl_agendamentos.id_agendamento,
-        tbl_clientes.nome_cliente,
-        tbl_barbeiros.nome_barbeiro,
-        tbl_servicos.nome_servico,
-        tbl_agendamentos.data_hora,
-        tbl_agendamentos.status_agendamento
+    tbl_agendamentos.id_agendamento,
+    tbl_clientes.nome_cliente,
+    tbl_barbeiros.nome_barbeiro,
+    tbl_servicos.nome_servico,
+    tbl_agendamentos.data_hora,
+    tbl_agendamentos.status_agendamento
     FROM tbl_agendamentos
     INNER JOIN tbl_clientes
     ON tbl_agendamentos.id_cliente = tbl_clientes.id_cliente
@@ -26,7 +26,17 @@ def listar_agendamentos():
     agendamentos = cursor.fetchall()
 
     for agendamento in agendamentos:
-        print(agendamento)
+
+        print(
+        f"""
+    ID Agendamento: {agendamento[0]}
+    Cliente: {agendamento[1]}
+    Barbeiro: {agendamento[2]}
+    Serviço: {agendamento[3]}
+    Data/Hora: {agendamento[4].strftime("%d/%m/%Y %H:%M")}
+    Status: {agendamento[5]}
+    """
+    )
 
     cursor.close()
     fechar_conexao(conexao)

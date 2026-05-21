@@ -1,11 +1,11 @@
+USE barberx;
+
 -- USUARIOS
 INSERT INTO tbl_usuarios
 (login_usuario, senha_usuario, tipo_usuario)
 VALUES
-('gabriel', '123', 'admin'),
-('joao', '123', 'admin'),
-('carlos', '123', 'admin'),
-('marcos', '1234', 'cliente'),
+('admin', 'admin', 'admin'),
+('cliente', 'cliente', 'cliente'),
 ('felipe', '1234', 'cliente'),
 ('anderson', '1234', 'cliente'),
 ('lucas', '1234', 'cliente');
@@ -15,10 +15,10 @@ VALUES
 INSERT INTO tbl_clientes
 (id_usuario, nome_cliente, numero_cliente, email_cliente)
 VALUES
-(4, 'Marcos Lima', '11999999999', 'marcos@gmail.com'),
-(5, 'Felipe Souza', '11988888888', 'felipe@gmail.com'),
-(6, 'Anderson Silva', '11977777777', 'anderson@gmail.com'),
-(7, 'Lucas Pereira', '11966666666', 'lucas@gmail.com');
+(2, 'Marcos Lima', '11999999999', 'marcos@gmail.com'),
+(3, 'Felipe Souza', '11988888888', 'felipe@gmail.com'),
+(4, 'Anderson Silva', '11977777777', 'anderson@gmail.com'),
+(5, 'Lucas Pereira', '11966666666', 'lucas@gmail.com');
 
 
 -- BARBEIROS

@@ -1,12 +1,24 @@
 from banco_de_dados.conexao import conectar, fechar_conexao
 
 def listar_barbeiros():
+
     conexao = conectar()
     cursor = conexao.cursor()
 
     cursor.execute("SELECT * FROM tbl_barbeiros")
-    for barbeiro in cursor.fetchall():
-        print(barbeiro)
+
+    barbeiros = cursor.fetchall()
+
+    for barbeiro in barbeiros:
+
+        print(
+            f"""
+    ID Barbeiro: {barbeiro[0]}
+    Nome: {barbeiro[1]}
+    Especialidade: {barbeiro[2]}
+    Telefone: {barbeiro[3]}
+    """
+        )
 
     cursor.close()
     fechar_conexao(conexao)
@@ -75,8 +87,8 @@ def editar_barbeiro():
     sql = """
     UPDATE tbl_barbeiros
     SET nome_barbeiro = %s,
-        especialidade_barbeiro = %s,
-        telefone_barbeiro = %s
+    especialidade_barbeiro = %s,
+    telefone_barbeiro = %s
     WHERE id_barbeiro = %s
     """
 
