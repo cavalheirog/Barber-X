@@ -331,6 +331,7 @@ def cancelar_agendamento(id_usuario):
     cursor.close()
     fechar_conexao(conexao)
 
+
 def editar_meus_dados(id_usuario):
     try:
         id_cliente = buscar_id_cliente(id_usuario)
@@ -381,8 +382,8 @@ def editar_meus_dados(id_usuario):
             """
             UPDATE tbl_clientes
             SET nome_cliente = %s,
-                numero_cliente = %s,
-                email_cliente = %s
+            numero_cliente = %s,
+            email_cliente = %s
             WHERE id_cliente = %s
             """,
             (novo_nome, novo_numero, novo_email, id_cliente)
@@ -402,32 +403,30 @@ def editar_meus_dados(id_usuario):
 def excluir_minha_conta(id_usuario):
 
     try:
-
-        conexao = conectar()
-        cursor = conexao.cursor()
-
         id_cliente = buscar_id_cliente(id_usuario)
 
         if id_cliente is None:
             print("Cliente não encontrado.")
             return
 
+        conexao = conectar()
+        cursor = conexao.cursor()
+
         cursor.execute(
             """
             SELECT id_agendamento
             FROM tbl_agendamentos
             WHERE id_cliente = %s
+            AND status_agendamento = 'agendado'
             """,
             (id_cliente,)
         )
 
-        if cursor.fetchone():
+        agendamento = cursor.fetchone()
 
-            print(
-                "Não é possível excluir a conta.\n"
-                "Existem agendamentos vinculados ao usuário."
-            )
-
+        if agendamento:
+            print("Não é possível excluir a conta.")
+            print("Existem agendamentos vinculados ao usuário.")
             cursor.close()
             fechar_conexao(conexao)
             return
@@ -437,9 +436,7 @@ def excluir_minha_conta(id_usuario):
         )
 
         if confirmacao.lower() != "s":
-
             print("Exclusão cancelada.")
-
             cursor.close()
             fechar_conexao(conexao)
             return
@@ -461,8 +458,9 @@ def excluir_minha_conta(id_usuario):
         cursor.close()
         fechar_conexao(conexao)
 
-    except Exception:
+    except Exception as erro:
         print("Erro ao excluir conta.")
+        print(erro)
         
 
 def menu_cliente(id_usuario, nome_login):

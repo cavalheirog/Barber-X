@@ -141,7 +141,12 @@ def excluir_cliente():
         id_usuario = resultado[0]
 
         cursor.execute(
-            "SELECT id_agendamento FROM tbl_agendamentos WHERE id_cliente = %s",
+            """
+            SELECT id_agendamento
+            FROM tbl_agendamentos
+            WHERE id_cliente = %s
+            AND status_agendamento = 'agendado'
+        """,
             (id_cliente,)
         )
 
