@@ -397,6 +397,72 @@ def editar_meus_dados(id_usuario):
 
     except Exception:
         print("Erro ao atualizar dados.")
+
+
+def excluir_minha_conta(id_usuario):
+
+    try:
+
+        conexao = conectar()
+        cursor = conexao.cursor()
+
+        id_cliente = buscar_id_cliente(id_usuario)
+
+        if id_cliente is None:
+            print("Cliente não encontrado.")
+            return
+
+        cursor.execute(
+            """
+            SELECT id_agendamento
+            FROM tbl_agendamentos
+            WHERE id_cliente = %s
+            """,
+            (id_cliente,)
+        )
+
+        if cursor.fetchone():
+
+            print(
+                "Não é possível excluir a conta.\n"
+                "Existem agendamentos vinculados ao usuário."
+            )
+
+            cursor.close()
+            fechar_conexao(conexao)
+            return
+
+        confirmacao = input(
+            "Tem certeza que deseja excluir sua conta? (s/n): "
+        )
+
+        if confirmacao.lower() != "s":
+
+            print("Exclusão cancelada.")
+
+            cursor.close()
+            fechar_conexao(conexao)
+            return
+
+        cursor.execute(
+            "DELETE FROM tbl_clientes WHERE id_cliente = %s",
+            (id_cliente,)
+        )
+
+        cursor.execute(
+            "DELETE FROM tbl_usuarios WHERE id_usuario = %s",
+            (id_usuario,)
+        )
+
+        conexao.commit()
+
+        print("Conta excluída com sucesso!")
+
+        cursor.close()
+        fechar_conexao(conexao)
+
+    except Exception:
+        print("Erro ao excluir conta.")
         
 
 def menu_cliente(id_usuario, nome_login):
@@ -432,10 +498,12 @@ def menu_cliente(id_usuario, nome_login):
     while True:
 
         print(f"\n===== MENU CLIENTE: {nome_login} =====")
+
         print("1 - Ver meus agendamentos")
         print("2 - Criar agendamento")
         print("3 - Cancelar agendamento")
         print("4 - Editar meus dados")
+        print("5 - Excluir minha conta")
         print("0 - Sair")
 
         opcao = input("Escolha: ")
@@ -451,6 +519,10 @@ def menu_cliente(id_usuario, nome_login):
 
         elif opcao == "4":
             editar_meus_dados(id_usuario)
+
+        elif opcao == "5":
+            excluir_minha_conta(id_usuario)
+            break
 
         elif opcao == "0":
             break
