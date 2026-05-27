@@ -422,24 +422,41 @@ def excluir_minha_conta(id_usuario):
             (id_cliente,)
         )
 
-        agendamento = cursor.fetchone()
+        agendamento_ativo = cursor.fetchone()
 
-        if agendamento:
+        if agendamento_ativo:
             print("Não é possível excluir a conta.")
-            print("Existem agendamentos vinculados ao usuário.")
+            print("Existem agendamentos ativos vinculados ao usuário.")
             cursor.close()
             fechar_conexao(conexao)
             return
 
-        confirmacao = input(
-            "Tem certeza que deseja excluir sua conta? (s/n): "
-        )
+        confirmacao = input("Tem certeza que deseja excluir sua conta? (s/n): ")
 
         if confirmacao.lower() != "s":
             print("Exclusão cancelada.")
             cursor.close()
             fechar_conexao(conexao)
             return
+
+        cursor.execute(
+            """
+            DELETE tbl_vendas
+            FROM tbl_vendas
+            INNER JOIN tbl_agendamentos
+            ON tbl_vendas.id_agendamento = tbl_agendamentos.id_agendamento
+            WHERE tbl_agendamentos.id_cliente = %s
+            """,
+            (id_cliente,)
+        )
+
+        cursor.execute(
+            """
+            DELETE FROM tbl_agendamentos
+            WHERE id_cliente = %s
+            """,
+            (id_cliente,)
+        )
 
         cursor.execute(
             "DELETE FROM tbl_clientes WHERE id_cliente = %s",

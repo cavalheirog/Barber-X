@@ -119,6 +119,7 @@ def alterar_senha():
 
 
 def excluir_cliente():
+
     try:
         conexao = conectar()
         cursor = conexao.cursor()
@@ -146,18 +147,37 @@ def excluir_cliente():
             FROM tbl_agendamentos
             WHERE id_cliente = %s
             AND status_agendamento = 'agendado'
-        """,
+            """,
             (id_cliente,)
         )
 
-        agendamento = cursor.fetchone()
+        agendamento_ativo = cursor.fetchone()
 
-        if agendamento:
+        if agendamento_ativo:
             print("Não é possível excluir este cliente.")
-            print("Existe agendamento vinculado a ele.")
+            print("Existem agendamentos ativos vinculados a ele.")
             cursor.close()
             fechar_conexao(conexao)
             return
+
+        cursor.execute(
+            """
+            DELETE tbl_vendas
+            FROM tbl_vendas
+            INNER JOIN tbl_agendamentos
+            ON tbl_vendas.id_agendamento = tbl_agendamentos.id_agendamento
+            WHERE tbl_agendamentos.id_cliente = %s
+            """,
+            (id_cliente,)
+        )
+
+        cursor.execute(
+            """
+            DELETE FROM tbl_agendamentos
+            WHERE id_cliente = %s
+            """,
+            (id_cliente,)
+        )
 
         cursor.execute(
             "DELETE FROM tbl_clientes WHERE id_cliente = %s",
@@ -171,13 +191,14 @@ def excluir_cliente():
 
         conexao.commit()
 
-        print("Cliente e usuário excluídos!")
+        print("Cliente e usuário excluídos com sucesso!")
 
         cursor.close()
         fechar_conexao(conexao)
 
-    except Exception:
+    except Exception as erro:
         print("Erro ao excluir cliente.")
+        print(erro)
 
 
 def menu():
