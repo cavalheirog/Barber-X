@@ -331,6 +331,74 @@ def cancelar_agendamento(id_usuario):
     cursor.close()
     fechar_conexao(conexao)
 
+def editar_meus_dados(id_usuario):
+    try:
+        id_cliente = buscar_id_cliente(id_usuario)
+
+        if id_cliente is None:
+            print("Cliente não encontrado.")
+            return
+
+        conexao = conectar()
+        cursor = conexao.cursor()
+
+        print("\n===== EDITAR MEUS DADOS =====")
+        print("Caso não queira alterar algum dado, informe novamente o valor atual.\n")
+
+        novo_login = input("Novo login: ")
+        nova_senha = input("Nova senha: ")
+        novo_nome = input("Novo nome: ")
+        novo_numero = input("Novo telefone: ")
+        novo_email = input("Novo email: ")
+
+        cursor.execute(
+            """
+            SELECT id_usuario
+            FROM tbl_usuarios
+            WHERE login_usuario = %s
+            AND id_usuario <> %s
+            """,
+            (novo_login, id_usuario)
+        )
+
+        if cursor.fetchone():
+            print("Esse login já está em uso.")
+            cursor.close()
+            fechar_conexao(conexao)
+            return
+
+        cursor.execute(
+            """
+            UPDATE tbl_usuarios
+            SET login_usuario = %s,
+                senha_usuario = %s
+            WHERE id_usuario = %s
+            """,
+            (novo_login, nova_senha, id_usuario)
+        )
+
+        cursor.execute(
+            """
+            UPDATE tbl_clientes
+            SET nome_cliente = %s,
+                numero_cliente = %s,
+                email_cliente = %s
+            WHERE id_cliente = %s
+            """,
+            (novo_nome, novo_numero, novo_email, id_cliente)
+        )
+
+        conexao.commit()
+
+        print("Dados atualizados com sucesso!")
+
+        cursor.close()
+        fechar_conexao(conexao)
+
+    except Exception:
+        print("Erro ao atualizar dados.")
+        
+
 def menu_cliente(id_usuario, nome_login):
 
     while True:
@@ -367,6 +435,7 @@ def menu_cliente(id_usuario, nome_login):
         print("1 - Ver meus agendamentos")
         print("2 - Criar agendamento")
         print("3 - Cancelar agendamento")
+        print("4 - Editar meus dados")
         print("0 - Sair")
 
         opcao = input("Escolha: ")
@@ -379,6 +448,9 @@ def menu_cliente(id_usuario, nome_login):
 
         elif opcao == "3":
             cancelar_agendamento(id_usuario)
+
+        elif opcao == "4":
+            editar_meus_dados(id_usuario)
 
         elif opcao == "0":
             break
